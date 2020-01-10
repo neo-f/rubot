@@ -1,0 +1,127 @@
+[agent]
+    round_interval = true
+    omit_hostname = false
+    flush_buffer_when_full = true
+    interval = "1s"
+    precision = "1ms"
+    collection_jitter = "100ms"
+    flush_interval = "3s"
+    flush_jitter = "0s"
+    metric_batch_size = 1000
+    metric_buffer_limit = 1000
+    Hostname = "bogon"
+
+[api]
+    host = "0.0.0.0"
+    port = 8000
+    mode = "release"
+
+[global_tags]
+    a = "b"
+    host = "bogon"
+
+[logging]
+    level = "info"
+    log_target = "stderr"
+    logfile = "stderr"
+    rotation_interval = "24h0m0s"
+    rotation_max_size = "50m"
+    rotation_max_archives = 10
+
+[[input_plugin]]
+    id = "bnor2tnbudggb1i29kdg"
+    name = "cpu"
+    interval = "10s"
+    [input_plugin.config]
+        collect_cpu_time = false
+        percpu = true
+        report_active = false
+        totalcpu = true
+    [input_plugin.parser]
+        type = "json"
+        tag_keys = []
+        json_string_fields = []
+        json_name_key = ""
+        metric_name = ""
+        json_query = ""
+        json_time_key = ""
+        json_time_format = ""
+        json_time_zone = ""
+        data_type = ""
+    [input_plugin.common]
+        name = "cpu"
+        interval = "0s"
+        name_override = ""
+        measurement_prefix = ""
+        measurement_suffix = ""
+        [input_plugin.common.filter]
+            name_drop = ["1"]
+
+[[input_plugin]]
+    id = "bnor2tnbudggb1i29ke0"
+    name = "mqtt"
+    interval = "10s"
+    [input_plugin.config]
+        connection_timeout = "30s"
+        max_undelivered_messages = 1000.0
+        password = "bitiiot"
+        qos = 2.0
+        servers = ["tcp://39.105.183.43:1883"]
+        topic_tag = "topic"
+        topics = ["BITIIOT/anju/#"]
+        username = "bitiiot"
+    [input_plugin.parser]
+        type = "json"
+        json_name_key = "SubSystem"
+        metric_name = ""
+        json_query = ""
+        json_time_key = "Timestamp"
+        json_time_format = "unix_ms"
+        json_time_zone = ""
+        data_type = ""
+    [input_plugin.common]
+        name = "mqtt"
+        interval = "0s"
+        name_override = ""
+        measurement_prefix = ""
+        measurement_suffix = ""
+        [input_plugin.common.filter]
+
+[[output_plugin]]
+    id = "bnora1nbudgifc57uqs0"
+    name = "memq"
+    [output_plugin.config]
+        max_size = 500
+    [output_plugin.serializer]
+        type = "influx"
+        influx_sort_fields = false
+        influx_uint_support = false
+        influx_max_line_bytes = 0
+        timestamp_units = "0s"
+    [output_plugin.common]
+        name = "memq"
+        flush_interval = "0s"
+        metric_buffer_limit = 0
+        metric_batch_size = 0
+        [output_plugin.common.filter]
+
+[[output_plugin]]
+    id = "bnotgc7budgm5t8p6qvg"
+    name = "file"
+    [output_plugin.config]
+        files = ["log"]
+        rotation_interval = "24h"
+        rotation_max_archives = 10
+        rotation_max_size = "10mb"
+    [output_plugin.serializer]
+        type = "influx"
+        influx_sort_fields = true
+        influx_uint_support = true
+        influx_max_line_bytes = 0
+        timestamp_units = "1s"
+    [output_plugin.common]
+        name = "file"
+        flush_interval = "0s"
+        metric_buffer_limit = 0
+        metric_batch_size = 0
+        [output_plugin.common.filter]
